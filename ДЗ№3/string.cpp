@@ -1,16 +1,18 @@
-//Дано предложение, состоящее из слов, разделенных запятой или пробелами, 
-//среди которых есть группы цифр, определяющих целые числа из диапазона int.
-//Удалить из предложения те целые числа, в десятичной записи 
-//которых есть цифры 5, 6, 7, а остальные числа увеличить на 2.
+//Р”Р°РЅРѕ РїСЂРµРґР»РѕР¶РµРЅРёРµ, СЃРѕСЃС‚РѕСЏС‰РµРµ РёР· СЃР»РѕРІ, СЂР°Р·РґРµР»РµРЅРЅС‹С… Р·Р°РїСЏС‚РѕР№ РёР»Рё РїСЂРѕР±РµР»Р°РјРё, 
+//СЃСЂРµРґРё РєРѕС‚РѕСЂС‹С… РµСЃС‚СЊ РіСЂСѓРїРїС‹ С†РёС„СЂ, РѕРїСЂРµРґРµР»СЏСЋС‰РёС… С†РµР»С‹Рµ С‡РёСЃР»Р° РёР· РґРёР°РїР°Р·РѕРЅР° int.
+//РЈРґР°Р»РёС‚СЊ РёР· РїСЂРµРґР»РѕР¶РµРЅРёСЏ С‚Рµ С†РµР»С‹Рµ С‡РёСЃР»Р°, РІ РґРµСЃСЏС‚РёС‡РЅРѕР№ Р·Р°РїРёСЃРё 
+//РєРѕС‚РѕСЂС‹С… РµСЃС‚СЊ С†РёС„СЂС‹ 5, 6, 7, Р° РѕСЃС‚Р°Р»СЊРЅС‹Рµ С‡РёСЃР»Р° СѓРІРµР»РёС‡РёС‚СЊ РЅР° 2.
 
 #include <iostream>
 #include <Windows.h>
-#include <string>
+#include <cstring>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
-bool it_digit(char s) // Проверяет, является ли подстрока числом
+bool it_digit(char s) // РџСЂРѕРІРµСЂСЏРµС‚, СЏРІР»СЏРµС‚СЃСЏ Р»Рё РїРѕРґСЃС‚СЂРѕРєР° С‡РёСЃР»РѕРј
 {
-    if (!(s <= '9' && s >= '0'))
+    if (!(int(s) <= int('9') && int(s) >= int('0')))
         return false;
     return true;
 }
@@ -20,13 +22,21 @@ int main()
     setlocale(LC_ALL, "ru");
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
-    string str;
-    string a[10]{};
-    cout << "Введите предложение:" << endl;
-    getline(cin, str);
+    char str[100];
+    int len = 0;
+    char a[10][10]{};
+    cout << "Р’РІРµРґРёС‚Рµ РїСЂРµРґР»РѕР¶РµРЅРёРµ:" << endl;
+    cin.getline(str, 100);
     int k = -1;
-    int len = str.length();
     char norm_num[10][10]{};
+
+    for (int i = 0; i < 100; i++)
+    {
+        if (str[i] != '\0')
+            len += 1;
+        else
+            break;
+    }
     int cnt = 0;
     for (int i = 0; i < len - 1; i++)
     {
@@ -37,17 +47,17 @@ int main()
             int j = i;
             int len_number = 0;
             bool flag = true;
-            while (str[j] != ' ' and j < len)
+            while (str[j] != ' ' && str[j] != '\0')
             {
                 if (str[j] == '5' || str[j] == '6' || str[j] == '7')
                 {
                     flag = false;
-                    a[k] += str[j];
+                    a[k][t] = str[j];
                     str[j] = '%';
                 }
+                t += 1;
                 j += 1;
                 len_number++;
-                
             }
             if (!flag)
             {
@@ -68,22 +78,23 @@ int main()
                 cnt++;
             }
         }
-    }
+    }    
     int* int_numbers = new int[10];
     for (int i = 0; i < 10; i++)
          int_numbers[i] = atoi(norm_num[i]);
+    
     for (int i = 0; i < 10; i++)
         int_numbers[i] += 2;
     int cunt = 0;
-    cout << "Готовая строка:" << endl;
+    cout << "Р“РѕС‚РѕРІР°СЏ СЃС‚СЂРѕРєР°:" << endl;
     for (int i = 0; i < len; i++)
     {
-        if (str[i] == '*' and (str[i + 1] == ' ' or str[i + 1] == '\0'))
+        if (str[i] == '*' and (str[i + 1] == ' ' or str[i + 1] == 'Рњ' or str[i + 1] == '\0'))
         {
             cout << int_numbers[cunt];
             cunt++;
         }
-        else if (str[i] == ' ' and str[i+1] == ' ') continue;
+        else if (str[i - 1] == ' ' and str[i] == ' ') continue;
         else if (str[i] != '*') cout << str[i];
     }
 }
